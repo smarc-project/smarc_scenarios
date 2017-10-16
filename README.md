@@ -12,7 +12,7 @@ First, check https://github.com/smarc-project/smarc_simulations for how to set u
 When that works, we can start the pipe following scenario. Before starting, make
 sure to source your workspace in the `.bashrc`, similar to: `source /path/to/your/catkin_ws/devel/setup.bash`.
 The simulation environment is started using a tmux script. For information on how to
-launch it, check https://github.com/smarc-project/smarc_utils/tree/master/smarc_bringup .
+launch it, check https://github.com/smarc-project/smarc_utils/blob/master/README.md#smarc_bringup .
 
 Now that you know how to use and navigate tmux, let's start the session using:
 ```
@@ -23,7 +23,7 @@ rosrun smarc_bringup pipe_following.sh
 
 In the fourth tmux tab, you can start the keyboard teleop window. Try
 to use this to steer the auv to follow the pipe. Instructions on
-how to steer the auv can be found in https://github.com/smarc-project/smarc_utils/tree/master/smarc_keyboard_teleop .
+how to steer the auv can be found in https://github.com/smarc-project/smarc_utils#smarc_keyboard_teleop .
 
 ### 4. Check some useful topics
 
@@ -48,6 +48,29 @@ In addition, the auv publishes several topics that might be of interest, you can
 
 ### 5. Create a system for following the pipe automatically
 
+This is something that we need to discuss!
 
+These are just some random hints that came to mind.
 
+#### OpenCV
 
+You will need to convert the `sensor_msgs/Image` to `opencv` images
+using `cv_bridge`, see http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython .
+
+To find the pipeline, you might want to calculate some gradients
+https://docs.opencv.org/trunk/d7/d4d/tutorial_py_thresholding.html , followed by thresholding
+https://docs.opencv.org/2.4/doc/tutorials/imgproc/threshold/threshold.html
+or just go for some thresholding based on the color directly.
+
+#### TF
+
+You will want to read about the transform buffers in ROS: http://wiki.ros.org/tf/Tutorials .
+The coordinate system in your case is defined with respect to the `world` frame, which is fixed
+with respect to the simulated world. You can use the transform to the auv `/smarc_auv/base_link` frame.
+
+#### Controllers
+
+Some simple P controller, https://en.wikipedia.org/wiki/Proportional_control , maybe?
+Or just something simpler. Do we need to add a depth sonar or a pressure sensor to be
+able to properly know the height? Uncomment these lines to get a sonar:
+https://github.com/smarc-project/smarc_simulations/blob/master/smarc_auvs/models/small_smarc_auv/urdf/small_smarc_auv_base.urdf.xacro#L227
