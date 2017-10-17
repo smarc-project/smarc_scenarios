@@ -62,6 +62,9 @@ https://docs.opencv.org/trunk/d7/d4d/tutorial_py_thresholding.html , followed by
 https://docs.opencv.org/2.4/doc/tutorials/imgproc/threshold/threshold.html
 or just go for some thresholding based on the color directly.
 
+Another idea might be to use the Hough transform to find the straight lines outlining the pipe:
+https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
+
 #### TF
 
 You will want to read about the transform buffers in ROS: http://wiki.ros.org/tf/Tutorials .
