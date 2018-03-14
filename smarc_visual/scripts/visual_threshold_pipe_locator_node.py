@@ -21,15 +21,26 @@ def construct_message(frame_id, point1, point2=None):
     # Path.poses is a PoseStamped list so we have to create these objects
     p1 = PoseStamped()
     p2 = PoseStamped()
-    msg.header.frame_id = p1.header.frame_id = p2.header.frame_id = "world"
+    msg.header.frame_id = p1.header.frame_id = p2.header.frame_id = "odom"
     msg.header.stamp = rospy.Time.now()
 
     if point1 is not None:
-        p1.pose.position.x, p1.pose.position.y, p1.pose.position.z = point1
+
+        point1 = np.array(point1)
+        point2 = np.array(point2)
+
+        point2 = point2 + 10.*(point2 - point1)
+        point1 = point1 + 10.*(point1 - point2)
+
+        p1.pose.position.x = point1[0]
+        p1.pose.position.y = point1[1]
+        p1.pose.position.z = point1[2]
         # p1.pose.orientation.w = 1.
         msg.poses.append(p1)
 
-        p2.pose.position.x, p2.pose.position.y, p2.pose.position.z = point2
+        p2.pose.position.x = point2[0]
+        p2.pose.position.y = point2[1]
+        p2.pose.position.z = point2[2]
         # p2.pose.orientation.w = 1.
         msg.poses.append(p2)
 
@@ -157,10 +168,10 @@ class VisualPipelineLocator:
         p2 = np.array([(p2[0] - cx) / fx, (p2[1] - cy) / fy, 1.])
 
         try:
-            self.tf.waitForTransform("world", self._frame_id, rospy.Time(0), rospy.Duration(4.0))
-            (position, quaternion) = self.tf.lookupTransform("world", self._frame_id, rospy.Time(0))
+            self.tf.waitForTransform("odom", self._frame_id, rospy.Time(0), rospy.Duration(4.0))
+            (position, quaternion) = self.tf.lookupTransform("odom", self._frame_id, rospy.Time(0))
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            rospy.logerr("Could not get transform between %s and %s, quitting...", self._frame_id, "world")
+            rospy.logerr("Could not get transform between %s and %s, quitting...", self._frame_id, "odom")
             sys.exit(-1)
 
         #if self.tf.frameExists(self._frame_id) and self.tf.frameExists("world"):
