@@ -1,0 +1,25 @@
+<launch>
+
+	<!-- Mode flags -->
+	<arg name="namespace" default="lolo_auv"/>
+	<arg name="navigation_on" default="true"/>
+	<arg name="gazebo_env" default="pipe_following"/>
+
+	<!-- Initial position of the AUV -->
+	<arg name="x" default="244.3"/>
+	<arg name="y" default="-23.4"/>
+	<arg name="z" default="-93.0"/>
+	<arg name="yaw" default="3.0"/>
+
+	<!-- Underwater scenario for Gazebo -->
+	<include file="$(find smarc_bringup)/launch/auv_scenarios.launch">
+		<arg name="namespace" value="$(arg namespace)"/>
+		<arg name="navigation_on" value="$(arg navigation_on)"/>
+		<arg name="gazebo_env" value="$(arg gazebo_env)"/>
+		<arg name="x" value="$(arg x)"/>
+		<arg name="y" value="$(arg y)"/>
+		<arg name="z" value="$(arg z)"/>
+		<arg name="yaw" value="$(arg yaw)"/>
+	</include>
+
+</launch>
