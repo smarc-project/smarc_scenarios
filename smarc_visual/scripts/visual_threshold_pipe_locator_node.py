@@ -21,7 +21,7 @@ def construct_message(frame_id, point1, point2=None):
     # Path.poses is a PoseStamped list so we have to create these objects
     p1 = PoseStamped()
     p2 = PoseStamped()
-    msg.header.frame_id = p1.header.frame_id = p2.header.frame_id = "odom"
+    msg.header.frame_id = p1.header.frame_id = p2.header.frame_id = frame_id #self.world_frame
     msg.header.stamp = rospy.Time.now()
 
     if point1 is not None:
@@ -60,6 +60,8 @@ class VisualPipelineLocator:
         self.subscriber = rospy.Subscriber(image_topic, Image, self.process_ros_image)
 
         self.publisher = rospy.Publisher(output_topic, Path, queue_size=10)
+        self.crop_y = 150
+        self.world_frame = "world"
 
         self.visualize = visualize
         self._frame_id = 'lolo_auv/camera_link_optical'
@@ -138,6 +140,10 @@ class VisualPipelineLocator:
             p1, p2 = self.calculate_2D_segment_ends(rho, theta, image.shape[0], image.shape[1])
             cv2.circle(copy, p1, 10, (255, 255, 255), 3)
             cv2.circle(copy, p2, 10, (255, 255, 255), 3)
+
+            p1 = (p1[0], p1[1]+self.crop_y)
+            p2 = (p2[0], p2[1]+self.crop_y)
+
             #cv2.line(copy, (x1, y1), (x2, y2), (0, 0, 255), 2)
             return copy, p1+(1.,), p2+(1.,)
         # except TypeError as e:
@@ -168,10 +174,10 @@ class VisualPipelineLocator:
         p2 = np.array([(p2[0] - cx) / fx, (p2[1] - cy) / fy, 1.])
 
         try:
-            self.tf.waitForTransform("odom", self._frame_id, rospy.Time(0), rospy.Duration(4.0))
-            (position, quaternion) = self.tf.lookupTransform("odom", self._frame_id, rospy.Time(0))
+            self.tf.waitForTransform(self.world_frame, self._frame_id, rospy.Time(0), rospy.Duration(4.0))
+            (position, quaternion) = self.tf.lookupTransform(self.world_frame, self._frame_id, rospy.Time(0))
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            rospy.logerr("Could not get transform between %s and %s, quitting...", self._frame_id, "odom")
+            rospy.logerr("Could not get transform between %s and %s, quitting...", self._frame_id, self.world_frame)
             sys.exit(-1)
 
         #if self.tf.frameExists(self._frame_id) and self.tf.frameExists("world"):
@@ -198,7 +204,7 @@ class VisualPipelineLocator:
         return tuple(p1.tolist()), tuple(p2.tolist())
 
     def process_cv2_image(self, input_image):
-        cropped_image = input_image[150:]  # crop submarine shell
+        cropped_image = input_image[self.crop_y:]  # crop submarine shell
         blur = cv2.GaussianBlur(cropped_image, (0, 0), 10)
         thresholded = self.color_threshold(blur)
         edges = cv2.Canny(thresholded, 100, 200)
@@ -216,7 +222,7 @@ class VisualPipelineLocator:
         cv_image = self.bridge.imgmsg_to_cv2(image_message, "bgr8")
         pipe_axis, p1, p2 = self.process_cv2_image(cv_image)
         #modify from here
-        msg = construct_message(self._frame_id, p1, p2)
+        msg = construct_message(self.world_frame, p1, p2)
         #msg.linear.x, msg.linear.y = pipe_axis
         self.publisher.publish(msg)
         # except TypeError:
