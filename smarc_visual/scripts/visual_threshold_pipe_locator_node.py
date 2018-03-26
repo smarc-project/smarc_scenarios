@@ -10,7 +10,7 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 from geometry_msgs.msg import Twist, PoseStamped
 import tf
-
+import math
 from nav_msgs.msg import Path
 
 
@@ -226,6 +226,13 @@ class VisualPipelineLocator:
                     alpha1 = (seafloor_height - position[2]) / np.dot(rot[2, :], p)
 
                     projection = alpha1 * np.matmul(rot, p) + position
+
+                    normproj = np.matmul(rot, p)
+                    normproj = 1./np.linalg.norm(normproj)*normproj
+                    print normproj[2]
+                    if normproj[2] >= 0. or math.acos(-normproj[2]) > 0.9*math.pi/2.:
+                        continue
+
                     projected_points.append(projection)
                     print lala[index], projection
                     index = index + 1
@@ -243,7 +250,7 @@ class VisualPipelineLocator:
             model_x_coords = map(lambda y: np.polynomial.polynomial.polyval(y, fit_coefficients), model_y_coords)
 
             points = np.transpose(np.stack((model_x_coords, model_y_coords)))
-            points = map(tuple, points.astype(int))
+            points = map(tuple, points) #.astype(int))
             return points
         except PipeNotFound:
             #print "Weak Signal"
@@ -253,6 +260,8 @@ class VisualPipelineLocator:
         blank = np.zeros(image.shape)
         for point in points:
             i, j = point
+            i = int(i)
+            j = int(j)
             if i >= image.shape[1] or i < 0:
                 pass
             else:
