@@ -14,45 +14,27 @@ import tf
 from nav_msgs.msg import Path
 
 
-def construct_message(frame_id, point1, point2=None):
+def construct_message(frame_id, points):
     # create a Path message with whatever frame we received the localisation in
     msg = Path()
-    # Path.poses is a PoseStamped list so we have to create these objects
-    p1 = PoseStamped()
-    p2 = PoseStamped()
-    msg.header.frame_id = p1.header.frame_id = p2.header.frame_id = frame_id
+
+    msg.header.frame_id = frame_id
     msg.header.stamp = rospy.Time.now()
 
-    try:
-        point1 = np.array(point1)
-        point2 = np.array(point2)
+    for point in points:
+        p = PoseStamped()
+        p.header.frame_id = frame_id
+        p.pose.position.x = point[0]
+        p.pose.position.y = point[1]
+        p.pose.position.z = point[2]
+        msg.poses.append(p)
 
-        point2 = point2 + 10.*(point2 - point1)
-        point1 = point1 + 10.*(point1 - point2)
-
-        p1.pose.position.x = point1[0]
-        p1.pose.position.y = point1[1]
-        p1.pose.position.z = point1[2]
-        # p1.pose.orientation.w = 1.
-        msg.poses.append(p1)
-
-        p2.pose.position.x = point2[0]
-        p2.pose.position.y = point2[1]
-        p2.pose.position.z = point2[2]
-        # p2.pose.orientation.w = 1.
-        msg.poses.append(p2)
-
-        return msg
-    except TypeError:
-        # print "HERE"
-        pass
-    finally:
-        return msg
+    return msg
 
 
 class PipeNotFound(Warning):
     def __init__(self, frame_id, publisher):
-        msg = construct_message(frame_id, None)
+        msg = construct_message(frame_id, [])
         publisher.publish(msg)
         print str(datetime.now()) + " Pipeline not found"
 
@@ -208,12 +190,15 @@ class VisualPipelineLocator:
 
             return tuple(p1.tolist()), tuple(p2.tolist())
 
-    def project_points_to_world(self, points):
+    def project_points_to_world(self, points, image_width):
+            # filter points in image range?
             # is there a topic with this info?
             fx = 300.83
             fy = fx
             cx = 384.5
             cy = 246.5
+
+            lala = points
 
             try:
                 self.tf.waitForTransform(self.world_frame, self._frame_id, rospy.Time(0), rospy.Duration(4.0))
@@ -222,34 +207,30 @@ class VisualPipelineLocator:
                 rospy.logerr("Could not get transform between %s and %s, quitting...", self._frame_id, self.world_frame)
                 sys.exit(-1)
 
-            for p in points:  # maybe vectorize?
-                p = (p[0], p[1] + self.crop_y)
-                p = np.array([(p[0]-cx)/fx, (p[1]-cy)/fy, 1.])
-
-
-
-            #if self.tf.frameExists(self._frame_id) and self.tf.frameExists("world"):
-            #    t = self.tf.getLatestCommonTime(self._frame_id, "world")
-            #    position, quaternion = self.tf.lookupTransform(self._frame_id, "world", t)
-            #    print position, quaternion
-            #else:
-            #    print "We do not have world frame or ", self._frame_id
-
             euler = tf.transformations.euler_from_quaternion(quaternion)
             rot = tf.transformations.euler_matrix(euler[0], euler[1], euler[2])[:3, :3]
 
             seafloor_height = -95.
-            # print np.dot(rot[2,:], p1)
-            # print position
-            alpha1 = (seafloor_height-position[2])/np.dot(rot[2,:], p1)
-            alpha2 = (seafloor_height - position[2]) / np.dot(rot[2, :], p2)
 
-            p1 = alpha1*np.matmul(rot, p1) + position
-            p2 = alpha2 * np.matmul(rot, p2) + position
+            projected_points = []
+            index=0
 
-            # print p1, p2
+            for p in points:  # maybe vectorize?
+                _, j = p
+                if j >= image_width or j < 0:
+                    pass
+                else:
+                    p = (p[0], p[1] + self.crop_y)
+                    p = np.array([(p[0]-cx)/fx, (p[1]-cy)/fy, 1.])
 
-            return tuple(p1.tolist()), tuple(p2.tolist())
+                    alpha1 = (seafloor_height - position[2]) / np.dot(rot[2, :], p)
+
+                    projection = alpha1 * np.matmul(rot, p) + position
+                    projected_points.append(projection)
+                    print lala[index], projection
+                    index = index + 1
+
+            return projected_points
 
     def fit_curve(self, image, degree):
         "takes a black and white image and fits a polinomial to white points. Returns polinomial coefficients"
@@ -261,7 +242,7 @@ class VisualPipelineLocator:
             model_y_coords = range(image.shape[0])
             model_x_coords = map(lambda y: np.polynomial.polynomial.polyval(y, fit_coefficients), model_y_coords)
 
-            points = np.transpose(np.stack((model_y_coords, model_x_coords)))
+            points = np.transpose(np.stack((model_x_coords, model_y_coords)))
             points = map(tuple, points.astype(int))
             return points
         except PipeNotFound:
@@ -272,10 +253,10 @@ class VisualPipelineLocator:
         blank = np.zeros(image.shape)
         for point in points:
             i, j = point
-            if j > image.shape[1] or j < 0:
+            if i >= image.shape[1] or i < 0:
                 pass
             else:
-                blank[i, j] = 1
+                blank[j, i] = 1
             #cv2.circle(image, point, 1, (255, 255, 255), 3)
         return blank
 
@@ -285,10 +266,8 @@ class VisualPipelineLocator:
         blur = cv2.GaussianBlur(cropped_image, (0, 0), 10)
         thresholded = self.color_threshold(blur)
         pipe_axis = self.fit_curve(thresholded, 3)
-        projections = self.project_points_to_world(pipe_axis)
+        projections = self.project_points_to_world(pipe_axis, cropped_image.shape[1])
 
-        # visualize, p1, p2 = self.print_lines(cropped_image, pipe_axis)
-        # p1, p2 = self.project_to_world(p1, p2)
         if self.visualize:
             visualize = self.visualize_points(cropped_image, pipe_axis)
             cv2.namedWindow("Original")
@@ -298,14 +277,15 @@ class VisualPipelineLocator:
             cv2.imshow("Im2", visualize)
 
             cv2.waitKey(3)
-        return pipe_axis, p1, p2  # pipe_axis as (rho, theta)
+
+        return projections
 
     def process_ros_image(self, image_message):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(image_message, "bgr8")
-            pipe_axis = self.process_cv2_image(cv_image)
-            #msg = construct_message(self.world_frame, p1, p2)
-            #self.publisher.publish(msg)
+            projected_pipe = self.process_cv2_image(cv_image)
+            msg = construct_message(self.world_frame, projected_pipe)
+            self.publisher.publish(msg)
         except TypeError:
             pass
         except CvBridgeError as e:
