@@ -183,6 +183,51 @@ class VisualPipelineLocator:
                 rospy.logerr("Could not get transform between %s and %s, quitting...", self._frame_id, self.world_frame)
                 sys.exit(-1)
 
+            # also remember to shift all points accordingly
+
+            #if self.tf.frameExists(self._frame_id) and self.tf.frameExists("world"):
+            #    t = self.tf.getLatestCommonTime(self._frame_id, "world")
+            #    position, quaternion = self.tf.lookupTransform(self._frame_id, "world", t)
+            #    print position, quaternion
+            #else:
+            #    print "We do not have world frame or ", self._frame_id
+
+            euler = tf.transformations.euler_from_quaternion(quaternion)
+            rot = tf.transformations.euler_matrix(euler[0], euler[1], euler[2])[:3, :3]
+
+            seafloor_height = -95.
+            # print np.dot(rot[2,:], p1)
+            # print position
+            alpha1 = (seafloor_height-position[2])/np.dot(rot[2,:], p1)
+            alpha2 = (seafloor_height - position[2]) / np.dot(rot[2, :], p2)
+
+            p1 = alpha1*np.matmul(rot, p1) + position
+            p2 = alpha2 * np.matmul(rot, p2) + position
+
+            # print p1, p2
+
+            return tuple(p1.tolist()), tuple(p2.tolist())
+
+    def project_points_to_world(self, points):
+            # is there a topic with this info?
+            fx = 300.83
+            fy = fx
+            cx = 384.5
+            cy = 246.5
+
+            try:
+                self.tf.waitForTransform(self.world_frame, self._frame_id, rospy.Time(0), rospy.Duration(4.0))
+                (position, quaternion) = self.tf.lookupTransform(self.world_frame, self._frame_id, rospy.Time(0))
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                rospy.logerr("Could not get transform between %s and %s, quitting...", self._frame_id, self.world_frame)
+                sys.exit(-1)
+
+            for p in points:  # maybe vectorize?
+                p = (p[0], p[1] + self.crop_y)
+                p = np.array([(p[0]-cx)/fx, (p[1]-cy)/fy, 1.])
+
+
+
             #if self.tf.frameExists(self._frame_id) and self.tf.frameExists("world"):
             #    t = self.tf.getLatestCommonTime(self._frame_id, "world")
             #    position, quaternion = self.tf.lookupTransform(self._frame_id, "world", t)
@@ -209,14 +254,14 @@ class VisualPipelineLocator:
     def fit_curve(self, image, degree):
         "takes a black and white image and fits a polinomial to white points. Returns polinomial coefficients"
         try:
-            x_coordinates, y_coordinates = np.where(image > 0)  # image has only two values: 0 and 255
-            if len(x_coordinates) < 500:
+            y_coordinates, x_coordinates = np.where(image > 0)  # image has only two values: 0 and 255
+            if len(y_coordinates) < 500:
                 raise PipeNotFound(self._frame_id, self.publisher)
-            fit_coefficients = np.polynomial.polynomial.polyfit(x_coordinates, y_coordinates, degree)
-            model_x_coords = range(image.shape[0])
-            model_y_coords = map(lambda x: np.polynomial.polynomial.polyval(x, fit_coefficients), model_x_coords)
+            fit_coefficients = np.polynomial.polynomial.polyfit(y_coordinates, x_coordinates, degree)
+            model_y_coords = range(image.shape[0])
+            model_x_coords = map(lambda y: np.polynomial.polynomial.polyval(y, fit_coefficients), model_y_coords)
 
-            points = np.transpose(np.stack((model_x_coords, model_y_coords)))
+            points = np.transpose(np.stack((model_y_coords, model_x_coords)))
             points = map(tuple, points.astype(int))
             return points
         except PipeNotFound:
@@ -240,6 +285,7 @@ class VisualPipelineLocator:
         blur = cv2.GaussianBlur(cropped_image, (0, 0), 10)
         thresholded = self.color_threshold(blur)
         pipe_axis = self.fit_curve(thresholded, 3)
+        projections = self.project_points_to_world(pipe_axis)
 
         # visualize, p1, p2 = self.print_lines(cropped_image, pipe_axis)
         # p1, p2 = self.project_to_world(p1, p2)
