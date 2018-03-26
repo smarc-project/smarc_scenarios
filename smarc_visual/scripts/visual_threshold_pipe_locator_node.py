@@ -167,6 +167,7 @@ class VisualPipelineLocator:
             return image, (None, None), (None, None)
 
     def project_to_world(self, p1, p2):
+            # is there a topic with this info?
             fx = 300.83
             fy = fx
             cx = 384.5
@@ -205,26 +206,60 @@ class VisualPipelineLocator:
 
             return tuple(p1.tolist()), tuple(p2.tolist())
 
+    def fit_curve(self, image, degree):
+        "takes a black and white image and fits a polinomial to white points. Returns polinomial coefficients"
+        try:
+            x_coordinates, y_coordinates = np.where(image > 0)  # image has only two values: 0 and 255
+            if len(x_coordinates) < 500:
+                raise PipeNotFound(self._frame_id, self.publisher)
+            fit_coefficients = np.polynomial.polynomial.polyfit(x_coordinates, y_coordinates, degree)
+            model_x_coords = range(image.shape[0])
+            model_y_coords = map(lambda x: np.polynomial.polynomial.polyval(x, fit_coefficients), model_x_coords)
+
+            points = np.transpose(np.stack((model_x_coords, model_y_coords)))
+            points = map(tuple, points.astype(int))
+            return points
+        except PipeNotFound:
+            #print "Weak Signal"
+            return tuple()
+
+    def visualize_points(self, image, points):
+        blank = np.zeros(image.shape)
+        for point in points:
+            i, j = point
+            if j > image.shape[1] or j < 0:
+                pass
+            else:
+                blank[i, j] = 1
+            #cv2.circle(image, point, 1, (255, 255, 255), 3)
+        return blank
+
+
     def process_cv2_image(self, input_image):
         cropped_image = input_image[self.crop_y:]  # crop submarine shell
         blur = cv2.GaussianBlur(cropped_image, (0, 0), 10)
         thresholded = self.color_threshold(blur)
-        edges = cv2.Canny(thresholded, 100, 200)
-        lines = cv2.HoughLines(edges, 1, np.pi/180, 100)
-        pipe_axis = self.compute_axis(lines)
-        visualize, p1, p2 = self.print_lines(cropped_image, pipe_axis)
-        p1, p2 = self.project_to_world(p1, p2)
+        pipe_axis = self.fit_curve(thresholded, 3)
+
+        # visualize, p1, p2 = self.print_lines(cropped_image, pipe_axis)
+        # p1, p2 = self.project_to_world(p1, p2)
         if self.visualize:
-            cv2.imshow("Image window", visualize)
+            visualize = self.visualize_points(cropped_image, pipe_axis)
+            cv2.namedWindow("Original")
+            cv2.imshow("Original", thresholded)
+
+            cv2.namedWindow("Im2")
+            cv2.imshow("Im2", visualize)
+
             cv2.waitKey(3)
         return pipe_axis, p1, p2  # pipe_axis as (rho, theta)
 
     def process_ros_image(self, image_message):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(image_message, "bgr8")
-            pipe_axis, p1, p2 = self.process_cv2_image(cv_image)
-            msg = construct_message(self.world_frame, p1, p2)
-            self.publisher.publish(msg)
+            pipe_axis = self.process_cv2_image(cv_image)
+            #msg = construct_message(self.world_frame, p1, p2)
+            #self.publisher.publish(msg)
         except TypeError:
             pass
         except CvBridgeError as e:
