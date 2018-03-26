@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-#from __future__ import print_function
 
 import rospy
 import sys
@@ -11,45 +10,31 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 from geometry_msgs.msg import Twist, PoseStamped
 import tf
-
+import math
 from nav_msgs.msg import Path
 
 
-def construct_message(frame_id, point1, point2=None):
+def construct_message(frame_id, points):
     # create a Path message with whatever frame we received the localisation in
     msg = Path()
-    # Path.poses is a PoseStamped list so we have to create these objects
-    p1 = PoseStamped()
-    p2 = PoseStamped()
-    msg.header.frame_id = p1.header.frame_id = p2.header.frame_id = frame_id #self.world_frame
+
+    msg.header.frame_id = frame_id
     msg.header.stamp = rospy.Time.now()
 
-    if point1 is not None:
-
-        point1 = np.array(point1)
-        point2 = np.array(point2)
-
-        point2 = point2 + 10.*(point2 - point1)
-        point1 = point1 + 10.*(point1 - point2)
-
-        p1.pose.position.x = point1[0]
-        p1.pose.position.y = point1[1]
-        p1.pose.position.z = point1[2]
-        # p1.pose.orientation.w = 1.
-        msg.poses.append(p1)
-
-        p2.pose.position.x = point2[0]
-        p2.pose.position.y = point2[1]
-        p2.pose.position.z = point2[2]
-        # p2.pose.orientation.w = 1.
-        msg.poses.append(p2)
+    for point in points:
+        p = PoseStamped()
+        p.header.frame_id = frame_id
+        p.pose.position.x = point[0]
+        p.pose.position.y = point[1]
+        p.pose.position.z = point[2]
+        msg.poses.append(p)
 
     return msg
 
 
 class PipeNotFound(Warning):
     def __init__(self, frame_id, publisher):
-        msg = construct_message(frame_id, None)
+        msg = construct_message(frame_id, [])
         publisher.publish(msg)
         print str(datetime.now()) + " Pipeline not found"
 
@@ -127,108 +112,193 @@ class VisualPipelineLocator:
         #return end1, end2
 
     def print_lines(self, image, lines):
-        #try:
-        if lines is None:
-            print "No lines found"
-            raise PipeNotFound(self._frame_id, self.publisher)
-        else:
-            print "Lines: ", lines
-            copy = image
-            rho = lines[0]
-            theta = lines[1]
-            #x1, y1, x2, y2 = self.calculate_2D_segment_ends(rho, theta)
-            p1, p2 = self.calculate_2D_segment_ends(rho, theta, image.shape[0], image.shape[1])
-            cv2.circle(copy, p1, 10, (255, 255, 255), 3)
-            cv2.circle(copy, p2, 10, (255, 255, 255), 3)
+        try:
+            if lines is None:
+                # print "No lines found"
+                raise PipeNotFound(self._frame_id, self.publisher)
+            else:
+                # print "Lines: ", lines
+                copy = image
+                rho = lines[0]
+                theta = lines[1]
+                #x1, y1, x2, y2 = self.calculate_2D_segment_ends(rho, theta)
+                p1, p2 = self.calculate_2D_segment_ends(rho, theta, image.shape[0], image.shape[1])
+                cv2.circle(copy, p1, 10, (255, 255, 255), 3)
+                cv2.circle(copy, p2, 10, (255, 255, 255), 3)
 
-            p1 = (p1[0], p1[1]+self.crop_y)
-            p2 = (p2[0], p2[1]+self.crop_y)
+                p1 = (p1[0], p1[1]+self.crop_y)
+                p2 = (p2[0], p2[1]+self.crop_y)
 
-            #cv2.line(copy, (x1, y1), (x2, y2), (0, 0, 255), 2)
-            return copy, p1+(1.,), p2+(1.,)
-        # except TypeError as e:
-        #     try:
-        #         copy = image
-        #         print "Got an exception:", e
-        #         #p1, p2 = self.calculate_2D_segment_ends(rho, theta, image.shape[1], image.shape[2])
-        #         #cv2.circle(copy, p1, 10, (255, 255, 255), 3)
-        #         #cv2.circle(copy, p2, 10, (255, 255, 255), 3)
-        #         #rho, theta = lines
-        #         #x1, y1, x2, y2 = self.calculate_2D_segment_ends(rho, theta)
-        #         #cv2.line(copy, (x1, y1), (x2, y2), (0, 0, 255), 2)
-        #         return copy
-        #     except:
-        #         print "The problem is not that the line is single"
-        # except:
-        #     # print "There is another kind of error"
-        #     return image
+                #cv2.line(copy, (x1, y1), (x2, y2), (0, 0, 255), 2)
+                return copy, p1+(1.,), p2+(1.,)
+            # except TypeError as e:
+            #     try:
+            #         copy = image
+            #         print "Got an exception:", e
+            #         #p1, p2 = self.calculate_2D_segment_ends(rho, theta, image.shape[1], image.shape[2])
+            #         #cv2.circle(copy, p1, 10, (255, 255, 255), 3)
+            #         #cv2.circle(copy, p2, 10, (255, 255, 255), 3)
+            #         #rho, theta = lines
+            #         #x1, y1, x2, y2 = self.calculate_2D_segment_ends(rho, theta)
+            #         #cv2.line(copy, (x1, y1), (x2, y2), (0, 0, 255), 2)
+            #         return copy
+            #     except:
+            #         print "The problem is not that the line is single"
+        except:
+            #print "There is another kind of error"
+            return image, (None, None), (None, None)
 
     def project_to_world(self, p1, p2):
+            # is there a topic with this info?
+            fx = 300.83
+            fy = fx
+            cx = 384.5
+            cy = 246.5
 
-        fx = 300.83
-        fy = fx
-        cx = 384.5
-        cy = 246.5
+            p1 = np.array([(p1[0]-cx)/fx, (p1[1]-cy)/fy, 1.])
+            p2 = np.array([(p2[0] - cx) / fx, (p2[1] - cy) / fy, 1.])
 
-        p1 = np.array([(p1[0]-cx)/fx, (p1[1]-cy)/fy, 1.])
-        p2 = np.array([(p2[0] - cx) / fx, (p2[1] - cy) / fy, 1.])
+            try:
+                self.tf.waitForTransform(self.world_frame, self._frame_id, rospy.Time(0), rospy.Duration(4.0))
+                (position, quaternion) = self.tf.lookupTransform(self.world_frame, self._frame_id, rospy.Time(0))
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                rospy.logerr("Could not get transform between %s and %s, quitting...", self._frame_id, self.world_frame)
+                sys.exit(-1)
 
+            # also remember to shift all points accordingly
+
+            #if self.tf.frameExists(self._frame_id) and self.tf.frameExists("world"):
+            #    t = self.tf.getLatestCommonTime(self._frame_id, "world")
+            #    position, quaternion = self.tf.lookupTransform(self._frame_id, "world", t)
+            #    print position, quaternion
+            #else:
+            #    print "We do not have world frame or ", self._frame_id
+
+            euler = tf.transformations.euler_from_quaternion(quaternion)
+            rot = tf.transformations.euler_matrix(euler[0], euler[1], euler[2])[:3, :3]
+
+            seafloor_height = -95.
+            # print np.dot(rot[2,:], p1)
+            # print position
+            alpha1 = (seafloor_height-position[2])/np.dot(rot[2,:], p1)
+            alpha2 = (seafloor_height - position[2]) / np.dot(rot[2, :], p2)
+
+            p1 = alpha1*np.matmul(rot, p1) + position
+            p2 = alpha2 * np.matmul(rot, p2) + position
+
+            # print p1, p2
+
+            return tuple(p1.tolist()), tuple(p2.tolist())
+
+    def project_points_to_world(self, points, image_width):
+            # filter points in image range?
+            # is there a topic with this info?
+            fx = 300.83
+            fy = fx
+            cx = 384.5
+            cy = 246.5
+
+            lala = points
+
+            try:
+                self.tf.waitForTransform(self.world_frame, self._frame_id, rospy.Time(0), rospy.Duration(4.0))
+                (position, quaternion) = self.tf.lookupTransform(self.world_frame, self._frame_id, rospy.Time(0))
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                rospy.logerr("Could not get transform between %s and %s, quitting...", self._frame_id, self.world_frame)
+                sys.exit(-1)
+
+            euler = tf.transformations.euler_from_quaternion(quaternion)
+            rot = tf.transformations.euler_matrix(euler[0], euler[1], euler[2])[:3, :3]
+
+            seafloor_height = -95.
+
+            projected_points = []
+            index=0
+
+            for p in points:  # maybe vectorize?
+                _, j = p
+                if j >= image_width or j < 0:
+                    pass
+                else:
+                    p = (p[0], p[1] + self.crop_y)
+                    p = np.array([(p[0]-cx)/fx, (p[1]-cy)/fy, 1.])
+
+                    alpha1 = (seafloor_height - position[2]) / np.dot(rot[2, :], p)
+
+                    projection = alpha1 * np.matmul(rot, p) + position
+
+                    normproj = np.matmul(rot, p)
+                    normproj = 1./np.linalg.norm(normproj)*normproj
+                    print normproj[2]
+                    if normproj[2] >= 0. or math.acos(-normproj[2]) > 0.9*math.pi/2.:
+                        continue
+
+                    projected_points.append(projection)
+                    print lala[index], projection
+                    index = index + 1
+
+            return projected_points
+
+    def fit_curve(self, image, degree):
+        "takes a black and white image and fits a polinomial to white points. Returns polinomial coefficients"
         try:
-            self.tf.waitForTransform(self.world_frame, self._frame_id, rospy.Time(0), rospy.Duration(4.0))
-            (position, quaternion) = self.tf.lookupTransform(self.world_frame, self._frame_id, rospy.Time(0))
-        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            rospy.logerr("Could not get transform between %s and %s, quitting...", self._frame_id, self.world_frame)
-            sys.exit(-1)
+            y_coordinates, x_coordinates = np.where(image > 0)  # image has only two values: 0 and 255
+            if len(y_coordinates) < 500:
+                raise PipeNotFound(self._frame_id, self.publisher)
+            fit_coefficients = np.polynomial.polynomial.polyfit(y_coordinates, x_coordinates, degree)
+            model_y_coords = range(image.shape[0])
+            model_x_coords = map(lambda y: np.polynomial.polynomial.polyval(y, fit_coefficients), model_y_coords)
 
-        #if self.tf.frameExists(self._frame_id) and self.tf.frameExists("world"):
-        #    t = self.tf.getLatestCommonTime(self._frame_id, "world")
-        #    position, quaternion = self.tf.lookupTransform(self._frame_id, "world", t)
-        #    print position, quaternion
-        #else:
-        #    print "We do not have world frame or ", self._frame_id
+            points = np.transpose(np.stack((model_x_coords, model_y_coords)))
+            points = map(tuple, points) #.astype(int))
+            return points
+        except PipeNotFound:
+            #print "Weak Signal"
+            return tuple()
 
-        euler = tf.transformations.euler_from_quaternion(quaternion)
-        rot = tf.transformations.euler_matrix(euler[0], euler[1], euler[2])[:3, :3]
+    def visualize_points(self, image, points):
+        blank = np.zeros(image.shape)
+        for point in points:
+            i, j = point
+            i = int(i)
+            j = int(j)
+            if i >= image.shape[1] or i < 0:
+                pass
+            else:
+                blank[j, i] = 1
+            #cv2.circle(image, point, 1, (255, 255, 255), 3)
+        return blank
 
-        seafloor_height = -95.
-        print np.dot(rot[2,:], p1)
-        print position
-        alpha1 = (seafloor_height-position[2])/np.dot(rot[2,:], p1)
-        alpha2 = (seafloor_height - position[2]) / np.dot(rot[2, :], p2)
-
-        p1 = alpha1*np.matmul(rot, p1) + position
-        p2 = alpha2 * np.matmul(rot, p2) + position
-
-        print p1, p2
-
-        return tuple(p1.tolist()), tuple(p2.tolist())
 
     def process_cv2_image(self, input_image):
         cropped_image = input_image[self.crop_y:]  # crop submarine shell
         blur = cv2.GaussianBlur(cropped_image, (0, 0), 10)
         thresholded = self.color_threshold(blur)
-        edges = cv2.Canny(thresholded, 100, 200)
-        lines = cv2.HoughLines(edges, 1, np.pi/180, 100)
-        pipe_axis = self.compute_axis(lines)
-        visualize, p1, p2 = self.print_lines(cropped_image, pipe_axis)
-        p1, p2 = self.project_to_world(p1, p2)
+        pipe_axis = self.fit_curve(thresholded, 3)
+        projections = self.project_points_to_world(pipe_axis, cropped_image.shape[1])
+
         if self.visualize:
-            cv2.imshow("Image window", visualize)
+            visualize = self.visualize_points(cropped_image, pipe_axis)
+            cv2.namedWindow("Original")
+            cv2.imshow("Original", thresholded)
+
+            cv2.namedWindow("Im2")
+            cv2.imshow("Im2", visualize)
+
             cv2.waitKey(3)
-        return pipe_axis, p1, p2  # as (rho, theta)
+
+        return projections
 
     def process_ros_image(self, image_message):
-        #try:
-        cv_image = self.bridge.imgmsg_to_cv2(image_message, "bgr8")
-        pipe_axis, p1, p2 = self.process_cv2_image(cv_image)
-        #modify from here
-        msg = construct_message(self.world_frame, p1, p2)
-        #msg.linear.x, msg.linear.y = pipe_axis
-        self.publisher.publish(msg)
-        # except TypeError:
-        #     pass
-        # except CvBridgeError as e:
-        #     print(e)
+        try:
+            cv_image = self.bridge.imgmsg_to_cv2(image_message, "bgr8")
+            projected_pipe = self.process_cv2_image(cv_image)
+            msg = construct_message(self.world_frame, projected_pipe)
+            self.publisher.publish(msg)
+        except TypeError:
+            pass
+        except CvBridgeError as e:
+            print(e)
 
 
 def main(args):
