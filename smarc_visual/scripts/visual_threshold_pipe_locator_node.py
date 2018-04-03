@@ -47,6 +47,7 @@ class VisualPipelineLocator:
         self.publisher = rospy.Publisher(output_topic, Path, queue_size=10)
         self.crop_y = 150
         self.world_frame = "world"
+        self.map_frame = "map"
 
         self.visualize = visualize
         self._frame_id = 'lolo_auv/camera_link_optical'
@@ -229,15 +230,34 @@ class VisualPipelineLocator:
 
                     normproj = np.matmul(rot, p)
                     normproj = 1./np.linalg.norm(normproj)*normproj
-                    print normproj[2]
+                    #print normproj[2]
                     if normproj[2] >= 0. or math.acos(-normproj[2]) > 0.9*math.pi/2.:
                         continue
 
                     projected_points.append(projection)
-                    print lala[index], projection
+                    #print lala[index], projection
                     index = index + 1
+            
+            try:
+                self.tf.waitForTransform(self.world_frame, self._frame_id, rospy.Time(0), rospy.Duration(4.0))
+                (position, quaternion) = self.tf.lookupTransform(self.map_frame, self.world_frame, rospy.Time(0))
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                rospy.logerr("Could not get transform between %s and %s, quitting...", self.world_frame, self.map_frame)
+                sys.exit(-1)
+
+            euler = tf.transformations.euler_from_quaternion(quaternion)
+            rot = tf.transformations.euler_matrix(euler[0], euler[1], euler[2])[:3, :3]
+
+            for i in range(0, len(projected_points)):
+                projected_points[i] = np.matmul(rot, projected_points[i]) + position
 
             return projected_points
+
+    def filter_curve(self, points, image):
+
+        non_zeros = np.any(image, axis=1)
+        filtered_points = [p for p in points if non_zeros[int(p[1])]]
+        return filtered_points
 
     def fit_curve(self, image, degree):
         "takes a black and white image and fits a polinomial to white points. Returns polinomial coefficients"
@@ -274,7 +294,8 @@ class VisualPipelineLocator:
         cropped_image = input_image[self.crop_y:]  # crop submarine shell
         blur = cv2.GaussianBlur(cropped_image, (0, 0), 10)
         thresholded = self.color_threshold(blur)
-        pipe_axis = self.fit_curve(thresholded, 3)
+        pipe_axis = self.fit_curve(thresholded, 2)
+        pipe_axis = self.filter_curve(pipe_axis, thresholded)
         projections = self.project_points_to_world(pipe_axis, cropped_image.shape[1])
 
         if self.visualize:
@@ -293,7 +314,7 @@ class VisualPipelineLocator:
         try:
             cv_image = self.bridge.imgmsg_to_cv2(image_message, "bgr8")
             projected_pipe = self.process_cv2_image(cv_image)
-            msg = construct_message(self.world_frame, projected_pipe)
+            msg = construct_message(self.map_frame, projected_pipe)
             self.publisher.publish(msg)
         except TypeError:
             pass
