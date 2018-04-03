@@ -24,6 +24,7 @@
 
 		
     <node name="line_follower" pkg="basic_line_follower" type="line_controller.py" respawn="false" output="screen" args=""/>
+    <node name="pipeline_map_server" pkg="smarc_visual" type="pipeline_map_server" respawn="false" output="screen"/>
     <node name="pipe_detector" pkg="smarc_visual" type="visual_threshold_pipe_locator_node.py" respawn="false" output="screen" args="nopitch"/>
 
 </launch>
