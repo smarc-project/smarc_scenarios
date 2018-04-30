@@ -5,16 +5,18 @@ import numpy as np, matplotlib.pyplot as plt
 
 class Algae_Farm(object):
 
-    def __init__(self, dx, dy, dw, lx, N):
+    def __init__(self, dx, dy, dw, lx, N, dsx, dsy):
 
         # x and y padding between wall area and farm borders [m]
         self.dx, self.dy = dx, dy
         # seperation between walls [m]
         self.dw = dw
-        # length of walls and x length of wall space
+        # length of walls and x length of wall space [m]
         self.lx = lx
         # number of walls
         self.N = N
+        # docking station position [m]
+        self.dsx, self.dsy = dsx, dsy
 
         # y length of wall space
         self.ly = (self.N - 1)*self.dw
@@ -77,26 +79,29 @@ class Algae_Farm(object):
             fig = plt.figure()
             ax = fig.gca()
 
-        # plot borders
+        # plot farm borders
         for bi in range(4):
             x, y = self.border_pts(bi)
-            ax.plot(x, y, "k.-", linewidth=10)
+            ax.plot(x, y, "k-", linewidth=5)
 
         # plot algae walls
         for wi in self.wi:
             x, y = self.wall_pts(wi)
             ax.plot(x, y, "k-")
 
+        # plot docking station
+        ax.scatter(self.dsx, self.dsy, s=80, c="k", marker="x")
+
         # set limits
-        ax.set_xlim([0, self.Lx])
-        ax.set_ylim([0, self.Ly])
+        #ax.set_xlim([0, self.Lx])
+        #ax.set_ylim([0, self.Ly])
 
         return ax
 
 if __name__ == "__main__":
 
     # initialise farm
-    farm = Algae_Farm(5, 5, 5, 10, 10)
+    farm = Algae_Farm(5, 5, 5, 10, 10, 40, 70)
     # plot farm layout
     farm.plot()
     # show plot
