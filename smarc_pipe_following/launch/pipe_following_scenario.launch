@@ -1,30 +1,39 @@
 <launch>
 
 	<!-- Mode flags -->
+	<arg name="gazebo_env" default="pipe_following"/>
+	<arg name="gui" default="true"/>
+
+	<!-- AUV params -->
 	<arg name="namespace" default="lolo_auv"/>
 	<arg name="navigation_on" default="true"/>
-	<arg name="gazebo_env" default="pipe_following"/>
+	<arg name="number" default="1"/>
 
 	<!-- Initial position of the AUV -->
 	<arg name="x" default="244.3"/>
-	<arg name="y" default="-23.4"/>
-	<arg name="z" default="-93.0"/>
+	<arg name="y" default="-22.4"/>
+	<arg name="z" default="-91.0"/>
+	<arg name="roll" default="0.0"/>
+	<arg name="pitch" default="0.0"/>
 	<arg name="yaw" default="3.0"/>
 
 	<!-- Underwater scenario for Gazebo -->
 	<include file="$(find smarc_bringup)/launch/auv_scenarios.launch">
+		<arg name="gazebo_env" value="$(arg gazebo_env)"/>
+		<arg name="gui" value="$(arg gui)"/>
+	</include>
+
+	<!-- AUV for Gazebo -->
+	<include file="$(find smarc_bringup)/launch/auv_system.launch">
 		<arg name="namespace" value="$(arg namespace)"/>
 		<arg name="navigation_on" value="$(arg navigation_on)"/>
-		<arg name="gazebo_env" value="$(arg gazebo_env)"/>
+		<arg name="number" default="$(arg number)"/>
 		<arg name="x" value="$(arg x)"/>
 		<arg name="y" value="$(arg y)"/>
 		<arg name="z" value="$(arg z)"/>
+		<arg name="roll" value="$(arg roll)"/>
+  		<arg name="pitch" value="$(arg pitch)"/>
 		<arg name="yaw" value="$(arg yaw)"/>
 	</include>
-
 		
-    <node name="line_follower" pkg="basic_line_follower" type="line_controller.py" respawn="false" output="screen" args=""/>
-    <node name="pipeline_map_server" pkg="smarc_visual" type="pipeline_map_server" respawn="false" output="screen"/>
-    <node name="pipe_detector" pkg="smarc_visual" type="visual_threshold_pipe_locator_node.py" respawn="false" output="screen" args="nopitch"/>
-
 </launch>
