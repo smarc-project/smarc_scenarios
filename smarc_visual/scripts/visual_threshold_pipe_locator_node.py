@@ -47,10 +47,10 @@ class VisualPipelineLocator:
         self.publisher = rospy.Publisher(output_topic, Path, queue_size=10)
         self.crop_y = 150
         self.world_frame = "world"
-        self.map_frame = "map"
+        self.map_frame = "lolo_auv_1_map"
 
         self.visualize = visualize
-        self._frame_id = 'lolo_auv/camera_link_optical'
+        self._frame_id = 'lolo_auv_1/camera_link_optical'
 
         self.bridge = CvBridge()
         self.tf = tf.TransformListener()
@@ -324,7 +324,7 @@ class VisualPipelineLocator:
 
 def main(args):
     rospy.init_node('visual_pipeline_locator', anonymous=True)
-    locator = VisualPipelineLocator(image_topic='/lolo_auv/lolo_auv/camera/camera_image',
+    locator = VisualPipelineLocator(image_topic='/lolo_auv_1/lolo_auv_1/camera/camera_image',
                                     output_topic='/lolo_auv/lolo_auv/camera/pipeline_locator',
                                     visualize=True)
     try:
