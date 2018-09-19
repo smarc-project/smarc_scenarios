@@ -130,6 +130,8 @@ class PipeDetector(object):
         pose_transformed.pose.orientation.z = quaternion[2]
         pose_transformed.pose.orientation.w = quaternion[3]
 
+        pose_transformed.pose.position.z = -85.
+
         self.goal_pub.publish(pose_transformed)
 
     def execute_cb(self, goal):
