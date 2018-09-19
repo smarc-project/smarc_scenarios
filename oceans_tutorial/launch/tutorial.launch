@@ -1,0 +1,34 @@
+<launch>
+
+  <arg name="carrot_dist" default="10."/>
+  <arg name="auv_name" default="lolo_auv_1"/>
+  <arg name="base_frame" default="$(arg auv_name)/base_link"/>
+  <arg name="thrust_level" default="200."/>
+  <arg name="heading_offsets" default="5."/>
+  <arg name="trajectory_points" default="100"/>
+  <arg name="goal_tolerance" default="3."/>
+  <arg name="add_task_srv" default="/task_executor/add_state"/>
+
+  <include file="$(find auv_simple_motion_planner)/launch/planner.launch">
+    <arg name="carrot_dist" value="$(arg carrot_dist)" />
+    <arg name="base_frame" value="$(arg base_frame)" />
+    <arg name="thrust_level" value="$(arg thrust_level)" />
+    <arg name="heading_offsets" value="$(arg heading_offsets)"/>
+    <arg name="trajectory_points" value="$(arg trajectory_points)"/>
+    <arg name="goal_tolerance" value="$(arg goal_tolerance)"/>
+  </include>
+
+  <include file="$(find state_machine)/launch/state_machine.launch">
+    <arg name="base_frame" value="$(arg base_frame)" />
+    <arg name="goal_tolerance" value="$(arg goal_tolerance)"/>
+    <arg name="add_task_srv" value="$(arg add_task_srv)"/>
+  </include>
+
+  <node name="fls_pipe_detector" pkg="oceans_tutorial" type="fls_pipe_detector.py" output="screen">
+  </node>
+
+  <node name="surface_act_server" pkg="oceans_tutorial" type="surface_act_server.py" output="screen">
+    <param name="auv_instance" value="$(arg auv_name)" />
+  </node>
+
+</launch>
