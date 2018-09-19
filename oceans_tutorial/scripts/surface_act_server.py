@@ -40,7 +40,7 @@ class SurfaceAUV(object):
                 
         header = Header()
         fin_angle = -60.
-        thrust_level = 400.
+        thrust_level = 200.
 
         while not rospy.is_shutdown() and not self.end_condition():
 
@@ -64,6 +64,18 @@ class SurfaceAUV(object):
             self.backfin.publish(header, backfinangle)
     
             r.sleep()
+
+        # Set to zero when reaching surface
+        self.thruster0.publish(header, 0)
+        self.thruster1.publish(header, 0)
+
+        self.fin0.publish(header, 0)
+        self.fin1.publish(header, 0)
+        self.fin2.publish(header, 0)
+        self.fin3.publish(header, 0)
+        self.fin4.publish(header, 0)
+        self.fin5.publish(header, 0)
+        self.backfin.publish(header, 0)
 
 
     def end_condition(self):
