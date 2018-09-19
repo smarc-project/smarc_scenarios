@@ -15,7 +15,7 @@ class SurfaceAUV(object):
         self.action_name = name
 
         # Get ROS params        
-        self.auv_name = rospy.get_param(rospy.get_name() + '/auv_instance', 'lolo_auv')
+        self.auv_name = rospy.get_param('~auv_instance', 'lolo_auv')
         self.base_frame = rospy.get_param('~base_frame', self.auv_name + "/base_link")
         self.action_name = rospy.get_param('~surface_act_name', "/surface_auv_act")
         self.listener = tf.TransformListener()
@@ -39,7 +39,7 @@ class SurfaceAUV(object):
         success = True
                 
         header = Header()
-        fin_angle = -60.
+        fin_angle = -4.
         thrust_level = 200.
 
         while not rospy.is_shutdown() and not self.end_condition():
@@ -50,7 +50,7 @@ class SurfaceAUV(object):
             fin3angle = -fin_angle # right
             fin4angle = fin_angle # down
             fin5angle = fin_angle # right
-            backfinangle = -0.1 # right
+            backfinangle = -4. # right
 
             self.thruster0.publish(header, thrust_level)
             self.thruster1.publish(header, thrust_level)
