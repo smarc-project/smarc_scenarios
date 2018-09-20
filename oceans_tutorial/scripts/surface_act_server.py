@@ -6,7 +6,7 @@ import actionlib
 import tf
 
 from std_msgs.msg import Header
-from smarc_msgs.msg import EmptyAction
+from smarc_msgs.msg import EmptyAction, EmptyFeedback, EmptyResult
 from uuv_gazebo_ros_plugins_msgs.msg import FloatStamped
 
 class SurfaceAUV(object):
@@ -42,15 +42,19 @@ class SurfaceAUV(object):
         fin_angle = -60.
         thrust_level = 200.
 
+        feedback = EmptyFeedback()
+        result = EmptyResult()
+
+        success = True
         while not rospy.is_shutdown() and not self.end_condition():
 
             fin0angle = fin_angle # top
             fin1angle = fin_angle # left
             fin2angle = -fin_angle # down
             fin3angle = -fin_angle # right
-            fin4angle = fin_angle # down
+            fin4angle = -fin_angle # down
             fin5angle = fin_angle # right
-            backfinangle = -0.1 # right
+            backfinangle = -0.3 # right
 
             self.thruster0.publish(header, thrust_level)
             self.thruster1.publish(header, thrust_level)
@@ -62,10 +66,22 @@ class SurfaceAUV(object):
             self.fin4.publish(header, fin4angle)
             self.fin5.publish(header, fin5angle)
             self.backfin.publish(header, backfinangle)
-    
+            
+            # Send the feedback
+            self.act_server.publish_feedback(feedback)
+            
+            # If the client preempts the action
+            if self.act_server.is_preempt_requested():
+                self.act_server.set_preempted()
+                success = False
+                break
+
             r.sleep()
 
-        # Set to zero when reaching surface
+        if success:
+            self.act_server.set_succeeded(result)
+
+        # Set to zero when finishing surface
         self.thruster0.publish(header, 0)
         self.thruster1.publish(header, 0)
 
