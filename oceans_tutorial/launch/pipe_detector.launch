@@ -1,0 +1,6 @@
+<launch>
+
+  <node name="fls_pipe_detector" pkg="oceans_tutorial" type="fls_pipe_detector.py" output="screen">
+  </node>
+
+</launch>

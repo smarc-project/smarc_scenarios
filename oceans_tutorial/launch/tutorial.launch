@@ -18,14 +18,14 @@
     <arg name="goal_tolerance" value="$(arg goal_tolerance)"/>
   </include>
 
-  <include file="$(find state_machine)/launch/state_machine.launch">
+  <include file="$(find auv_sm_mission_executor)/launch/mission_executor.launch">
     <arg name="base_frame" value="$(arg base_frame)" />
     <arg name="goal_tolerance" value="$(arg goal_tolerance)"/>
     <arg name="add_task_srv" value="$(arg add_task_srv)"/>
   </include>
 
-  <node name="fls_pipe_detector" pkg="oceans_tutorial" type="fls_pipe_detector.py" output="screen">
-  </node>
+  <include file="$(find oceans_tutorial)/launch/pipe_detector.launch">
+  </include>
 
   <node name="surface_act_server" pkg="oceans_tutorial" type="surface_act_server.py" output="screen">
     <param name="auv_instance" value="$(arg auv_name)" />

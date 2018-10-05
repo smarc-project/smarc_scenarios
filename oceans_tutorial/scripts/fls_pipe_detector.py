@@ -82,7 +82,7 @@ class PipeDetector(object):
         #print(lines[0])
         #for i in range(0, min(len(lines), 1)):
         (rho, theta) = lines[0][0]
-        print("Rho, theta: ", rho, theta)
+        #print("Rho, theta: ", rho, theta)
         a = np.cos(theta)
         b = np.sin(theta)
         x0 = a*rho
@@ -146,6 +146,7 @@ class PipeDetector(object):
             r.sleep()
 
         self.is_executing = False
+        self.goal_pub.publish(PoseStamped())
         rospy.loginfo('%s: Preempted' % self._action_name)
         self._as.set_preempted()
         
