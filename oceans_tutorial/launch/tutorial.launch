@@ -23,7 +23,7 @@
     <arg name="base_frame" value="$(arg base_frame)" />
     <arg name="goal_tolerance" value="$(arg goal_tolerance)"/>
     <arg name="add_task_srv" value="$(arg add_task_srv)"/>
-    <arg name="add_tasks_srv" value="$(arg add_tasks_srv)"/>
+    <!-- <arg name="add_tasks_srv" value="$(arg add_tasks_srv)"/> -->
   </include>
 
   <include file="$(find oceans_tutorial)/launch/pipe_detector.launch">
