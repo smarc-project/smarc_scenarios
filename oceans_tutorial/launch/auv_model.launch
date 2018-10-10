@@ -1,0 +1,10 @@
+<launch>
+
+  <include file="$(find smarc_bringup)/launch/auv_model.launch">
+    <arg name="x" value="244.3"/>
+    <arg name="y" value="-23.4"/>
+    <arg name="z" value="-93.0"/>
+    <arg name="yaw" value="3.0"/>
+  </include>
+
+</launch>
