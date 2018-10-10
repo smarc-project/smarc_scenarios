@@ -1,0 +1,5 @@
+<launch>
+
+  <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="--clock tutorial_bag.bag"/>
+
+</launch>

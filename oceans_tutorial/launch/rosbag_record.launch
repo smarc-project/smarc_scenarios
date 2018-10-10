@@ -1,0 +1,6 @@
+<launch>
+
+ <node pkg="rosbag" type="record" name="rosbag_record"
+       args="record -O tutorial_bag.bag /tf /tf_static /current_schedule /global_plan /lolo_auv_1/imu /lolo_auv_1/pose_gt /lolo_auv_1/robot_description /lolo_auv_1/dvl /lolo_auv_1/dvl_sonar0 /lolo_auv_1/dvl_sonar1 /lolo_auv_1/dvl_sonar2 /lolo_auv_1/dvl_sonar3 /lolo_auv_1/lolo_auv_1/camera/camera_image /lolo_auv_1/lolo_auv_1/camera_thruster/camera_image /lolo_auv_1/depth/image_raw_sonar /world_models"/>
+
+</launch>
