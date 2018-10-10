@@ -1,6 +1,7 @@
 <launch>
 
   <node name="fls_pipe_detector" pkg="oceans_tutorial" type="fls_pipe_detector.py" output="screen">
+    <!-- <remap to="/lolo_auv_1/depth/image_raw_raw_sonar" from="/fls_input"/> -->
   </node>
 
 </launch>

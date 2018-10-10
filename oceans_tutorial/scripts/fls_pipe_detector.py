@@ -174,7 +174,8 @@ class PipeDetector(object):
         self._as.start()
         rospy.loginfo("Announced action server with name: %s", self._action_name)
 
-        self.image_sub = rospy.Subscriber("/lolo_auv_1/depth/image_raw_raw_sonar", Image, self.callback)
+        #self.image_sub = rospy.Subscriber("/lolo_auv_1/depth/image_raw_raw_sonar", Image, self.callback)
+        self.image_sub = rospy.Subscriber("/fls_input", Image, self.callback)
 
         rospy.spin()
         
