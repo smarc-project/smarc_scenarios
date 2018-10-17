@@ -9,6 +9,7 @@
   <arg name="goal_tolerance" default="3."/>
   <arg name="add_task_srv" default="/task_executor/add_state"/>
   <arg name="add_tasks_srv" default="/task_executor/add_states"/>
+  <arg name="mission_file" default="$(find auv_mission_planner)/missions/pipe_mission.csv"/>
 
   <include file="$(find auv_simple_motion_planner)/launch/planner.launch">
     <arg name="carrot_dist" value="$(arg carrot_dist)" />
@@ -33,6 +34,10 @@
 
   <node name="surface_act_server" pkg="oceans_tutorial" type="surface_act_server.py" output="screen">
     <param name="auv_instance" value="$(arg auv_name)" />
+  </node>
+
+  <node pkg="auv_mission_planner" type="mission_planner.py" name="mission_planner" output="screen">
+    <param name="mission_file" value="$(arg mission_file)"/>
   </node>
 
 </launch>
