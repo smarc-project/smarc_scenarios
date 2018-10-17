@@ -38,6 +38,7 @@
 
   <node pkg="auv_mission_planner" type="mission_planner.py" name="mission_planner" output="screen">
     <param name="mission_file" value="$(arg mission_file)"/>
+    <param name="marker_scale" value="2."/>
   </node>
 
 </launch>
