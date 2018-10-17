@@ -1,0 +1,9 @@
+<launch>
+
+  <arg name="mission_file" default="$(find auv_mission_planner)/missions/pipe_mission.csv"/>
+
+  <include file="$(find auv_mission_planner)/launch/upload_mission.launch">
+    <arg name="mission_file" value="$(arg mission_file)"/>
+  </include>
+
+</launch>

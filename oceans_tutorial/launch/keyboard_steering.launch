@@ -1,0 +1,6 @@
+<launch>
+
+  <include file="$(find smarc_keyboard_teleop)/launch/keyboard_teleop.launch">
+  </include>
+
+</launch>
