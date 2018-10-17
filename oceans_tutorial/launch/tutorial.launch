@@ -26,8 +26,10 @@
     <!-- <arg name="add_tasks_srv" value="$(arg add_tasks_srv)"/> -->
   </include>
 
+  <!--
   <include file="$(find oceans_tutorial)/launch/pipe_detector.launch">
   </include>
+  -->
 
   <node name="surface_act_server" pkg="oceans_tutorial" type="surface_act_server.py" output="screen">
     <param name="auv_instance" value="$(arg auv_name)" />
