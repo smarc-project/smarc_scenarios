@@ -22,9 +22,11 @@
     <arg name="goal_tolerance" value="$(arg goal_tolerance)"/>
   </include>
 
+  <!--
   <node name="surface_act_server" pkg="oceans_tutorial" type="surface_act_server.py" output="screen">
     <param name="auv_instance" value="$(arg auv_name)" />
   </node>
+  -->
 
   <include file="$(find imc_ros_bridge)/launch/bridge.launch">
     <arg name="server_addr" value="$(arg server_addr)"/>
