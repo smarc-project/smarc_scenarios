@@ -50,8 +50,8 @@
 
     <!-- Origin placed somewhere in the middle of the North Sea  -->
     <spherical_coordinates>
-      <latitude_deg>56.71897669633431</latitude_deg>
-      <longitude_deg>3.515625</longitude_deg>
+      <latitude_deg>43.931833</latitude_deg>
+      <longitude_deg>15.442641</longitude_deg>
     </spherical_coordinates>
 
     <!-- Global light source -->
@@ -89,62 +89,6 @@
       <uri>model://biograd</uri>
       <pose>0 0 -95 0 0 0</pose>
     </include>
-
-    <!-- Beacons -->
-    <include>
-      <uri>model://large_rock</uri>
-      <pose>205 -23 -95 0 0 0</pose>
-      <name>beacon_0</name>
-    </include>
-
-    <include>
-      <uri>model://large_rock</uri>
-      <pose>170 -60 -95 0 0 0</pose>
-      <name>beacon_1</name>
-    </include>
-
-    <include>
-      <uri>model://large_rock</uri>
-      <pose>123 -78 -95 0 0 0</pose>
-      <name>beacon_2</name>
-    </include>
-
-    <include>
-      <uri>model://large_rock</uri>
-      <pose>66 -80 -95 0 0 0</pose>
-      <name>beacon_3</name>
-    </include>
-
-    <include>
-      <uri>model://large_rock</uri>
-      <pose>-10 -80 -95 0 0 0</pose>
-      <name>beacon_4</name>
-    </include>
-
-    <include>
-      <uri>model://large_rock</uri>
-      <pose>-98 -77 -95 0 0 0</pose>
-      <name>beacon_5</name>
-    </include>
-
-    <include>
-      <uri>model://large_rock</uri>
-      <pose>-153 -81 -95 0 0 0</pose>
-      <name>beacon_6</name>
-    </include>
-
-    <include>
-      <uri>model://large_rock</uri>
-      <pose>-198 -111 -95 0 0 0</pose>
-      <name>beacon_7</name>
-    </include>
-
-    <include>
-      <uri>model://large_rock</uri>
-      <pose>-230 -152 -95 0 0 0</pose>
-      <name>beacon_8</name>
-    </include>
-
 
     <!-- Dummy laser -->
     <include>
