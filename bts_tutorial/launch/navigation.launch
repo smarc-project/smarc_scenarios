@@ -10,7 +10,7 @@
 
   <arg name="server_addr" default="127.0.0.1"/>
   <arg name="server_port" default="6002"/>
-  <arg name="system_name" default="imc_ros_bridge"/>
+  <arg name="system_name" default="$(arg auv_name)"/>
   <arg name="imc_id" default="4"/>
 
   <include file="$(find auv_simple_motion_planner)/launch/planner.launch">
@@ -20,6 +20,7 @@
     <arg name="heading_offsets" value="$(arg heading_offsets)"/>
     <arg name="trajectory_points" value="$(arg trajectory_points)"/>
     <arg name="goal_tolerance" value="$(arg goal_tolerance)"/>
+    <arg name="system_name" default="$(arg auv_name)"/>
   </include>
 
   <!--
