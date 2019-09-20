@@ -22,7 +22,7 @@
 
     <node pkg="rostopic" type="rostopic" name="fake_gps_fix"
           args="pub /gps/fix sensor_msgs/NavSatFix --latch
-          '{header: {seq: 999, stamp: {secs: 0, nsecs: 0}, frame_id: 'gps'},
+          '{header: {seq: 999, stamp: {secs: 0, nsecs: 0}, frame_id: 'world_local'},
             status: {status: 0, service: 1},
             latitude: $(arg latitude),
             longitude: $(arg longitude),
