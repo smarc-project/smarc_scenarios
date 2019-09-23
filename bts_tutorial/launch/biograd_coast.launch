@@ -15,6 +15,7 @@
         <arg name="headless" value="false"/>
         <arg name="debug" value="false"/>
         <arg name="verbose" value="true"/>
+        <arg name="extra_gazebo_args" value="-s libregister_underwater_sonar_sensor.so"/>
     </include>
 
     <node pkg="tf" type="static_transform_publisher" name="world_utm_broadcaster" args="535529 4864397 0 0 0 0 1 world_utm world_local 100" />
