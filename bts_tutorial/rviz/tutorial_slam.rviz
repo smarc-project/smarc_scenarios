@@ -7,10 +7,12 @@ Panels:
         - /Global Options1
         - /Status1
         - /RobotModel1
+        - /TF1
         - /PointCloud21
-        - /AerialMapDisplay1
+        - /LaserScan1
+        - /AerialMapDisplay1/Status1
       Splitter Ratio: 0.474576265
-    Tree Height: 775
+    Tree Height: 747
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -29,7 +31,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: LaserScan
 Toolbars:
   toolButtonStyle: 2
 Visualization Manager:
@@ -63,6 +65,85 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        lolo_auv_1/back_fin0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/camera_link_optical:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/camera_thruster_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/camera_thruster_link_optical:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/fin0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/fin1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/fin2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/fin3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/fin4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/fin5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/mbes_sonar_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        lolo_auv_1/pose_sensor_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/thruster_left:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lolo_auv_1/thruster_right:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: /lolo_auv_1/robot_description
       TF Prefix: ""
@@ -74,13 +155,606 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        lolo_auv_1/back_fin0:
+          Value: true
+        lolo_auv_1/base_link:
+          Value: true
+        lolo_auv_1/camera_link:
+          Value: true
+        lolo_auv_1/camera_link_optical:
+          Value: true
+        lolo_auv_1/camera_thruster_link:
+          Value: true
+        lolo_auv_1/camera_thruster_link_optical:
+          Value: true
+        lolo_auv_1/fin0:
+          Value: true
+        lolo_auv_1/fin1:
+          Value: true
+        lolo_auv_1/fin2:
+          Value: true
+        lolo_auv_1/fin3:
+          Value: true
+        lolo_auv_1/fin4:
+          Value: true
+        lolo_auv_1/fin5:
+          Value: true
+        lolo_auv_1/mbes_sonar_link:
+          Value: true
+        lolo_auv_1/pose_sensor_link:
+          Value: true
+        lolo_auv_1/thruster_left:
+          Value: true
+        lolo_auv_1/thruster_right:
+          Value: true
+        lolo_auv_1_map:
+          Value: true
+        submap_0_frame:
+          Value: true
+        submap_100_frame:
+          Value: true
+        submap_101_frame:
+          Value: true
+        submap_102_frame:
+          Value: true
+        submap_103_frame:
+          Value: true
+        submap_104_frame:
+          Value: true
+        submap_105_frame:
+          Value: true
+        submap_106_frame:
+          Value: true
+        submap_107_frame:
+          Value: true
+        submap_108_frame:
+          Value: true
+        submap_109_frame:
+          Value: true
+        submap_10_frame:
+          Value: true
+        submap_110_frame:
+          Value: true
+        submap_111_frame:
+          Value: true
+        submap_112_frame:
+          Value: true
+        submap_113_frame:
+          Value: true
+        submap_114_frame:
+          Value: true
+        submap_115_frame:
+          Value: true
+        submap_116_frame:
+          Value: true
+        submap_117_frame:
+          Value: true
+        submap_118_frame:
+          Value: true
+        submap_119_frame:
+          Value: true
+        submap_11_frame:
+          Value: true
+        submap_120_frame:
+          Value: true
+        submap_121_frame:
+          Value: true
+        submap_122_frame:
+          Value: true
+        submap_123_frame:
+          Value: true
+        submap_124_frame:
+          Value: true
+        submap_125_frame:
+          Value: true
+        submap_126_frame:
+          Value: true
+        submap_127_frame:
+          Value: true
+        submap_128_frame:
+          Value: true
+        submap_129_frame:
+          Value: true
+        submap_12_frame:
+          Value: true
+        submap_130_frame:
+          Value: true
+        submap_131_frame:
+          Value: true
+        submap_132_frame:
+          Value: true
+        submap_133_frame:
+          Value: true
+        submap_134_frame:
+          Value: true
+        submap_135_frame:
+          Value: true
+        submap_136_frame:
+          Value: true
+        submap_137_frame:
+          Value: true
+        submap_138_frame:
+          Value: true
+        submap_139_frame:
+          Value: true
+        submap_13_frame:
+          Value: true
+        submap_140_frame:
+          Value: true
+        submap_141_frame:
+          Value: true
+        submap_142_frame:
+          Value: true
+        submap_143_frame:
+          Value: true
+        submap_144_frame:
+          Value: true
+        submap_145_frame:
+          Value: true
+        submap_146_frame:
+          Value: true
+        submap_147_frame:
+          Value: true
+        submap_148_frame:
+          Value: true
+        submap_149_frame:
+          Value: true
+        submap_14_frame:
+          Value: true
+        submap_150_frame:
+          Value: true
+        submap_151_frame:
+          Value: true
+        submap_152_frame:
+          Value: true
+        submap_153_frame:
+          Value: true
+        submap_15_frame:
+          Value: true
+        submap_16_frame:
+          Value: true
+        submap_17_frame:
+          Value: true
+        submap_18_frame:
+          Value: true
+        submap_19_frame:
+          Value: true
+        submap_1_frame:
+          Value: true
+        submap_20_frame:
+          Value: true
+        submap_21_frame:
+          Value: true
+        submap_22_frame:
+          Value: true
+        submap_23_frame:
+          Value: true
+        submap_24_frame:
+          Value: true
+        submap_25_frame:
+          Value: true
+        submap_26_frame:
+          Value: true
+        submap_27_frame:
+          Value: true
+        submap_28_frame:
+          Value: true
+        submap_29_frame:
+          Value: true
+        submap_2_frame:
+          Value: true
+        submap_30_frame:
+          Value: true
+        submap_31_frame:
+          Value: true
+        submap_32_frame:
+          Value: true
+        submap_33_frame:
+          Value: true
+        submap_34_frame:
+          Value: true
+        submap_35_frame:
+          Value: true
+        submap_36_frame:
+          Value: true
+        submap_37_frame:
+          Value: true
+        submap_38_frame:
+          Value: true
+        submap_39_frame:
+          Value: true
+        submap_3_frame:
+          Value: true
+        submap_40_frame:
+          Value: true
+        submap_41_frame:
+          Value: true
+        submap_42_frame:
+          Value: true
+        submap_43_frame:
+          Value: true
+        submap_44_frame:
+          Value: true
+        submap_45_frame:
+          Value: true
+        submap_46_frame:
+          Value: true
+        submap_47_frame:
+          Value: true
+        submap_48_frame:
+          Value: true
+        submap_49_frame:
+          Value: true
+        submap_4_frame:
+          Value: true
+        submap_50_frame:
+          Value: true
+        submap_51_frame:
+          Value: true
+        submap_52_frame:
+          Value: true
+        submap_53_frame:
+          Value: true
+        submap_54_frame:
+          Value: true
+        submap_55_frame:
+          Value: true
+        submap_56_frame:
+          Value: true
+        submap_57_frame:
+          Value: true
+        submap_58_frame:
+          Value: true
+        submap_59_frame:
+          Value: true
+        submap_5_frame:
+          Value: true
+        submap_60_frame:
+          Value: true
+        submap_61_frame:
+          Value: true
+        submap_62_frame:
+          Value: true
+        submap_63_frame:
+          Value: true
+        submap_64_frame:
+          Value: true
+        submap_65_frame:
+          Value: true
+        submap_66_frame:
+          Value: true
+        submap_67_frame:
+          Value: true
+        submap_68_frame:
+          Value: true
+        submap_69_frame:
+          Value: true
+        submap_6_frame:
+          Value: true
+        submap_70_frame:
+          Value: true
+        submap_71_frame:
+          Value: true
+        submap_72_frame:
+          Value: true
+        submap_73_frame:
+          Value: true
+        submap_74_frame:
+          Value: true
+        submap_75_frame:
+          Value: true
+        submap_76_frame:
+          Value: true
+        submap_77_frame:
+          Value: true
+        submap_78_frame:
+          Value: true
+        submap_79_frame:
+          Value: true
+        submap_7_frame:
+          Value: true
+        submap_80_frame:
+          Value: true
+        submap_81_frame:
+          Value: true
+        submap_82_frame:
+          Value: true
+        submap_83_frame:
+          Value: true
+        submap_84_frame:
+          Value: true
+        submap_85_frame:
+          Value: true
+        submap_86_frame:
+          Value: true
+        submap_87_frame:
+          Value: true
+        submap_88_frame:
+          Value: true
+        submap_89_frame:
+          Value: true
+        submap_8_frame:
+          Value: true
+        submap_90_frame:
+          Value: true
+        submap_91_frame:
+          Value: true
+        submap_92_frame:
+          Value: true
+        submap_93_frame:
+          Value: true
+        submap_94_frame:
+          Value: true
+        submap_95_frame:
+          Value: true
+        submap_96_frame:
+          Value: true
+        submap_97_frame:
+          Value: true
+        submap_98_frame:
+          Value: true
+        submap_99_frame:
+          Value: true
+        submap_9_frame:
+          Value: true
+        world:
+          Value: true
+        world_local:
+          Value: true
+        world_utm:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        world_local:
+          world:
+            lolo_auv_1_map:
+              lolo_auv_1/base_link:
+                lolo_auv_1/back_fin0:
+                  {}
+                lolo_auv_1/camera_link:
+                  lolo_auv_1/camera_link_optical:
+                    {}
+                lolo_auv_1/camera_thruster_link:
+                  lolo_auv_1/camera_thruster_link_optical:
+                    {}
+                lolo_auv_1/fin0:
+                  {}
+                lolo_auv_1/fin1:
+                  {}
+                lolo_auv_1/fin2:
+                  {}
+                lolo_auv_1/fin3:
+                  {}
+                lolo_auv_1/fin4:
+                  {}
+                lolo_auv_1/fin5:
+                  {}
+                lolo_auv_1/mbes_sonar_link:
+                  {}
+                lolo_auv_1/pose_sensor_link:
+                  {}
+                lolo_auv_1/thruster_left:
+                  {}
+                lolo_auv_1/thruster_right:
+                  {}
+              submap_0_frame:
+                {}
+              submap_100_frame:
+                {}
+              submap_101_frame:
+                {}
+              submap_102_frame:
+                {}
+              submap_103_frame:
+                {}
+              submap_104_frame:
+                {}
+              submap_105_frame:
+                {}
+              submap_10_frame:
+                {}
+              submap_11_frame:
+                {}
+              submap_12_frame:
+                {}
+              submap_13_frame:
+                {}
+              submap_14_frame:
+                {}
+              submap_15_frame:
+                {}
+              submap_16_frame:
+                {}
+              submap_17_frame:
+                {}
+              submap_18_frame:
+                {}
+              submap_19_frame:
+                {}
+              submap_1_frame:
+                {}
+              submap_20_frame:
+                {}
+              submap_21_frame:
+                {}
+              submap_22_frame:
+                {}
+              submap_23_frame:
+                {}
+              submap_24_frame:
+                {}
+              submap_25_frame:
+                {}
+              submap_26_frame:
+                {}
+              submap_27_frame:
+                {}
+              submap_28_frame:
+                {}
+              submap_29_frame:
+                {}
+              submap_2_frame:
+                {}
+              submap_30_frame:
+                {}
+              submap_31_frame:
+                {}
+              submap_32_frame:
+                {}
+              submap_33_frame:
+                {}
+              submap_34_frame:
+                {}
+              submap_35_frame:
+                {}
+              submap_36_frame:
+                {}
+              submap_37_frame:
+                {}
+              submap_38_frame:
+                {}
+              submap_39_frame:
+                {}
+              submap_3_frame:
+                {}
+              submap_40_frame:
+                {}
+              submap_41_frame:
+                {}
+              submap_42_frame:
+                {}
+              submap_43_frame:
+                {}
+              submap_44_frame:
+                {}
+              submap_45_frame:
+                {}
+              submap_46_frame:
+                {}
+              submap_47_frame:
+                {}
+              submap_48_frame:
+                {}
+              submap_49_frame:
+                {}
+              submap_4_frame:
+                {}
+              submap_50_frame:
+                {}
+              submap_51_frame:
+                {}
+              submap_52_frame:
+                {}
+              submap_53_frame:
+                {}
+              submap_54_frame:
+                {}
+              submap_55_frame:
+                {}
+              submap_56_frame:
+                {}
+              submap_57_frame:
+                {}
+              submap_58_frame:
+                {}
+              submap_59_frame:
+                {}
+              submap_5_frame:
+                {}
+              submap_60_frame:
+                {}
+              submap_61_frame:
+                {}
+              submap_62_frame:
+                {}
+              submap_63_frame:
+                {}
+              submap_64_frame:
+                {}
+              submap_65_frame:
+                {}
+              submap_66_frame:
+                {}
+              submap_67_frame:
+                {}
+              submap_68_frame:
+                {}
+              submap_69_frame:
+                {}
+              submap_6_frame:
+                {}
+              submap_70_frame:
+                {}
+              submap_71_frame:
+                {}
+              submap_72_frame:
+                {}
+              submap_73_frame:
+                {}
+              submap_74_frame:
+                {}
+              submap_75_frame:
+                {}
+              submap_76_frame:
+                {}
+              submap_77_frame:
+                {}
+              submap_78_frame:
+                {}
+              submap_79_frame:
+                {}
+              submap_7_frame:
+                {}
+              submap_80_frame:
+                {}
+              submap_81_frame:
+                {}
+              submap_82_frame:
+                {}
+              submap_83_frame:
+                {}
+              submap_84_frame:
+                {}
+              submap_85_frame:
+                {}
+              submap_86_frame:
+                {}
+              submap_87_frame:
+                {}
+              submap_88_frame:
+                {}
+              submap_89_frame:
+                {}
+              submap_8_frame:
+                {}
+              submap_90_frame:
+                {}
+              submap_91_frame:
+                {}
+              submap_92_frame:
+                {}
+              submap_93_frame:
+                {}
+              submap_94_frame:
+                {}
+              submap_95_frame:
+                {}
+              submap_96_frame:
+                {}
+              submap_97_frame:
+                {}
+              submap_98_frame:
+                {}
+              submap_99_frame:
+                {}
+              submap_9_frame:
+                {}
+        world_utm:
+          {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -109,8 +783,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: -99.8516617
-        Min Value: -100.049728
+        Max Value: -88.700882
+        Min Value: -100.077896
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -151,9 +825,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 155
+      Max Intensity: 102
       Min Color: 0; 0; 0
-      Min Intensity: 120
+      Min Intensity: 0
       Name: LaserScan
       Position Transformer: XYZ
       Queue Size: 10
@@ -161,7 +835,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.00999999978
       Style: Points
-      Topic: /lolo_auv_1/mbes_laser
+      Topic: /lolo_auv_1/mbes_data
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -204,33 +878,33 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 241.54277
+      Distance: 215.493347
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 37.628231
-        Y: 14.1939983
-        Z: 68.0927505
+        X: -173.64389
+        Y: -147.686417
+        Z: -80.5227127
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.880398154
+      Pitch: 1.44479632
       Target Frame: world
       Value: Orbit (rviz)
-      Yaw: 0.700406075
+      Yaw: 4.17359209
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1040
+  Height: 1028
   Hide Left Dock: false
   Hide Right Dock: true
-  QMainWindow State: 000000ff00000000fd00000004000000000000016400000393fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005e00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000002200000393000000ce00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f00000393fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000002200000393000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000003be0000003efc0100000002fb0000000800540069006d00650100000000000003be0000024800fffffffb0000000800540069006d00650100000000000004500000000000000000000002560000039300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001a20000037afc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006100fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c00610079007301000000280000037a000000d700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f00000393fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000002200000393000000ad00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000003c00000003efc0100000002fb0000000800540069006d00650100000000000003c00000030000fffffffb0000000800540069006d00650100000000000004500000000000000000000002180000037a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -239,6 +913,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: true
-  Width: 958
-  X: 0
-  Y: 18
+  Width: 960
+  X: 960
+  Y: 24
