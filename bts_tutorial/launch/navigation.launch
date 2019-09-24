@@ -23,6 +23,11 @@
     <arg name="system_name" default="$(arg auv_name)"/>
   </include>
 
+    <!-- Perception components  -->
+  <include file="$(find auv_sensors)/launch/auv_sensors.launch">
+          <arg name="namespace" value="$(arg auv_name)"/>
+  </include>
+
   <!--
   <node name="surface_act_server" pkg="oceans_tutorial" type="surface_act_server.py" output="screen">
     <param name="auv_instance" value="$(arg auv_name)" />
