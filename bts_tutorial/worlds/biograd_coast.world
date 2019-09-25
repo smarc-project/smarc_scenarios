@@ -87,7 +87,7 @@
     <!-- Heightmap -->
     <include>
       <uri>model://biograd</uri>
-      <pose>0 0 -95 0 0 0</pose>
+      <pose>0 0 0 0 0 0</pose>
     </include>
 
     <!-- Dummy laser -->
