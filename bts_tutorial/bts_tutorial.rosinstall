@@ -34,3 +34,7 @@
     local-name: imc_ros_bridge
     uri: https://github.com/smarc-project/imc_ros_bridge.git
     version: master
+- git:
+    local-name: smarc_auvs
+    uri: https://github.com/smarc-project/smarc_auvs.git
+    version: master
