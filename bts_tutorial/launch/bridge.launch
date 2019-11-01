@@ -1,0 +1,24 @@
+<launch>
+
+  <arg name="carrot_dist" default="10."/>
+  <arg name="auv_name" default="lolo_auv_1"/>
+  <arg name="base_frame" default="$(arg auv_name)/base_link"/>
+  <arg name="thrust_level" default="200."/>
+  <arg name="heading_offsets" default="5."/>
+  <arg name="trajectory_points" default="100"/>
+  <arg name="goal_tolerance" default="3."/>
+
+  <arg name="server_addr" default="127.0.0.1"/>
+  <arg name="server_port" default="6002"/>
+  <arg name="system_name" default="$(arg auv_name)"/>
+  <arg name="imc_id" default="5"/>
+
+
+  <include file="$(find imc_ros_bridge)/launch/bridge.launch">
+    <arg name="server_addr" value="$(arg server_addr)"/>
+    <arg name="server_port" value="$(arg server_port)" type="str"/>
+    <arg name="imc_system_name" value="$(arg system_name)"/>
+    <arg name="imc_id" value="$(arg imc_id)"/>
+  </include>
+
+</launch>
