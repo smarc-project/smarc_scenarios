@@ -14,7 +14,7 @@ rosinstall bts_tutorial.rosinstall
 catkin_make install
 ```
 
-Install Neptus and set it up to use lolo-auv. See [here](https://github.com/smarc-project/imc_ros_bridge)
+Install Neptus and set it up to use lolo-auv. See [here](https://github.com/smarc-project/imc_ros_bridge). For this demo, you do not need to think about any imc-id's. The launch files in the demo provide the recquired parameters as defaults.
 
 ### Start running things
 Start Neptus: `./neptus.sh`
@@ -35,7 +35,7 @@ Run the imc bridge: `roslaunch bts_tutorial bridge.launch`
 At this point, you should see `LOLO_AUV` pop up with id 00:05 under IMC Comm. Monitor in Neptus. This means we have a connection to the AUV running in Gazebo.
 
 This is what you should be seeing:
-![Neptus and Gazebo simulator showing Lolo](LINKTO1.PNGHERE "Neptus and Gazebo")
+![Neptus and Gazebo simulator showing Lolo](https://github.com/smarc-project/smarc_scenarios/blob/master/bts_tutorial/screenshots/1.png "Neptus and Gazebo")
 
 ### Making and executing a plan
 From here, it is mostly about using Neptus. 
@@ -48,17 +48,26 @@ Once the view loads the map from the internet, click the small red P button on t
 
 In the plan creation mode, right clicking on the map shows a menu of available maneuvers. We will only use two types here: Goto and CoverArea. The Goto maneuver is just that, a waypoint for the vehicle to go to. Once you add one of these, the right panel will show the properties of the maneuver. You can change the depth of the waypoint here. The CoverArea maneuver is a Goto maneuver that also acts as a toggle for the MBES. Essentially when lolo's current waypoint is a CoverArea, it will toggle the MBES. This behaviour is entirely defined in the behaviour tree being used. 
 
-Play with the waypoints, drag them around, make new ones, etc. Once you are happy with your plan, click save on the right panel, near the buttom. Give your plan a name and click ok. This will move you out of the planning view and back into the default view. You can now see your new plan on the right panel. 
+Play with the waypoints, drag them around, make new ones, etc. Once you are happy with your plan, click save on the right panel, near the bottom. Give your plan a name and click ok. This will move you out of the planning view and back into the default view. You can now see your new plan on the right panel. 
 
 To send the plan to the lolo in gazebo, first make sure that lolo is selected on the top-right corner drop down menu. Then make sure the plan is selected as well. You should see the plan you made in the map. If all is well, clicking the blue arrow near the top of the right panel will send the plan to lolo. Since lolo does not wait for an extra command to start executing, it will immediately start moving in simulation. 
 
 At this point, lolo will start sending back feedback to Neptus. Its location will start updating in the map and the text fields near the top of the right panel will start showing some info. 
 
 ### Monitoring the mission
-You can use Rviz at the same time to monitor different topics. 
-TODO: This part.
-TODO: Pictures and video.
+The first to look at is Gazebo. Once you start the mission, Lolo in Gazebo will start moving around, controlling the fins and the propellers. You can right click `lolo_auv_1` on the left panel and follow it while it moves around.
 
+You can use Rviz at the same time to monitor the auv. See the `rviz/` folder for rviz configs. 
+Once the mission starts running, in Rviz, you should see something like this: 
+![Rviz](https://github.com/smarc-project/smarc_scenarios/blob/master/bts_tutorial/screenshots/2.png "Lolo in Rviz")
+Here, the MBES is shown as colored dots on the map. When there is a waypoint lolo is trying to reach, a green curve will show the planned path that it is trying to follow.
+
+At the same time, you can monitor the behaviour tree in Rqt. Simply launch rqt, and go to Plugins -> Visualization -> Behavour Tree. This will create a segment that looks like this:
+![Rqt BT](https://github.com/smarc-project/smarc_scenarios/blob/master/bts_tutorial/screenshots/3.png "Behavaiour Tree in Rqt")
+As the mission progresses, you can see that the different parts of the tree change states.
+
+Meanwhile, Neptus will keep updating, showing the location of the auv. 
+![Lolo in Neptus](https://github.com/smarc-project/smarc_scenarios/blob/master/bts_tutorial/screenshots/4.png "Lolo in Neptus")
 
 
 
